@@ -39,7 +39,7 @@ var cfg = {
   },
   resolve: {
     modules: [
-      "node_modules", resolve("../node_modules/")
+      "node_modules", resolve("./node_modules/")
     ]
   }
 };
