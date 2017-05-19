@@ -5,7 +5,6 @@ nuget Fable.Core
 nuget Fable.React
 nuget Fable.Elmish
 nuget Fable.Elmish.React
-nuget Fable.Compiler
 
 group Build
 framework: net46

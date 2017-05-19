@@ -93,17 +93,19 @@ Target "InstallDotNetCore" (fun _ ->
 )
 
 
+Target "Clean" (fun _ ->
+    CleanDir "build"
+)
+
 Target "Install" (fun _ ->
+    Npm (fun p ->
+        { p with
+            NpmFilePath = yarn
+            Command = Install Standard
+        })
     projects
     |> Seq.iter (fun s -> 
         let dir = IO.Path.GetDirectoryName s
-        printf "Installing: %s\n" dir
-        Npm (fun p ->
-            { p with
-                NpmFilePath = yarn
-                Command = Install Standard
-                WorkingDirectory = dir
-            })
         runDotnet dir "restore"
     )
 )
@@ -115,6 +117,13 @@ Target "Build" (fun _ ->
         runDotnet dir "fable npm-run build")
 )
 
+Target "Watch" (fun _ ->
+    projects
+    |> Seq.iter (fun s -> 
+        let dir = IO.Path.GetDirectoryName s
+        runDotnet dir "fable npm-run start")
+)
+
 // --------------------------------------------------------------------------------------
 // Release Scripts
 
@@ -123,8 +132,7 @@ Target "ReleaseSample" (fun _ ->
     CleanDir tempDocsDir
     Repository.cloneSingleBranch "" (gitHome + "/" + gitName + ".git") "gh-pages" tempDocsDir
 
-    CopyRecursive "src/public" tempDocsDir true |> tracefn "%A"
-    ["src/index.html"] |> CopyFiles tempDocsDir
+    CopyRecursive "build" tempDocsDir true |> tracefn "%A"
 
     StageAll tempDocsDir
     Git.Commit.Commit tempDocsDir (sprintf "Update generated sample")
@@ -134,10 +142,16 @@ Target "ReleaseSample" (fun _ ->
 Target "Publish" DoNothing
 
 // Build order
-"InstallDotNetCore"
+"Clean"
+  ==> "InstallDotNetCore"
   ==> "Install"
   ==> "Build"
 
+"Clean"
+  ==> "InstallDotNetCore"
+  ==> "Install"
+  ==> "Watch"
+  
 "Publish"
   <== [ "Build"
         "ReleaseSample" ]

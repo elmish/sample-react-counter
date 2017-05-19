@@ -7,7 +7,7 @@
 **/node_modules/
 **/npm/
 npm-debug.log
-samples/**/public
+
 
 .vscode/
 
@@ -25,9 +25,6 @@ samples/react-native/navigation/windows/
 
 .vs
 
-# Ignore production files generated from webpack
-**/public/bundle.js
-**/public/bundle.js.map
-
 *.nupkg
 dotnetsdk
+temp
