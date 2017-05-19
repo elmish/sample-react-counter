@@ -1,11 +1,13 @@
 // include Fake libs
-#r "./packages/FAKE/tools/FakeLib.dll"
+#r "./packages/build/FAKE/tools/FakeLib.dll"
 #r "System.IO.Compression.FileSystem"
 
 open System
 open System.IO
 open Fake
 open Fake.NpmHelper
+open Fake.Git
+
 
 let yarn = 
     if EnvironmentHelper.isWindows then "yarn.cmd" else "yarn"
@@ -14,16 +16,14 @@ let yarn =
        | Some yarn -> yarn
        | ex -> failwith ( sprintf "yarn not found (%A)\n" ex )
 
-// Directories
-let buildDir  = "./build/"
+let gitName = "sample-react-counter"
+let gitOwner = "fable-elmish"
+let gitHome = sprintf "https://github.com/%s" gitOwner
 
 // Filesets
 let projects  =
-      !! "src/*.fsproj"
+      !! "src/**.fsproj"
 
-// Artifact packages
-let packages  =
-      !! "src/package.json"
 
 let dotnetcliVersion = "1.0.1"
 let mutable dotnetExePath = "dotnet"
@@ -90,9 +90,6 @@ Target "InstallDotNetCore" (fun _ ->
         |> Seq.iter (fun path -> tracefn " - %s%c" path System.IO.Path.DirectorySeparatorChar)
 
         dotnetExePath <- dotnetSDKPath </> (if isWindows then "dotnet.exe" else "dotnet")
-
-    // let oldPath = System.Environment.GetEnvironmentVariable("PATH")
-    // System.Environment.SetEnvironmentVariable("PATH", sprintf "%s%s%s" dotnetSDKPath (System.IO.Path.PathSeparator.ToString()) oldPath)
 )
 
 
@@ -111,12 +108,6 @@ Target "Install" (fun _ ->
     )
 )
 
-
-// Targets
-Target "Clean" (fun _ ->
-    CleanDirs [buildDir]
-)
-
 Target "Build" (fun _ ->
     projects
     |> Seq.iter (fun s -> 
@@ -124,12 +115,33 @@ Target "Build" (fun _ ->
         runDotnet dir "fable npm-run build")
 )
 
+// --------------------------------------------------------------------------------------
+// Release Scripts
+
+Target "ReleaseSample" (fun _ ->
+    let tempDocsDir = "temp/gh-pages"
+    CleanDir tempDocsDir
+    Repository.cloneSingleBranch "" (gitHome + "/" + gitName + ".git") "gh-pages" tempDocsDir
+
+    CopyRecursive "src/public" tempDocsDir true |> tracefn "%A"
+    ["src/index.html"] |> CopyFiles tempDocsDir
+
+    StageAll tempDocsDir
+    Git.Commit.Commit tempDocsDir (sprintf "Update generated sample")
+    Branches.push tempDocsDir
+)
+
+Target "Publish" DoNothing
 
 // Build order
-"Clean"
-  ==> "InstallDotNetCore"
+"InstallDotNetCore"
   ==> "Install"
   ==> "Build"
+
+"Publish"
+  <== [ "Build"
+        "ReleaseSample" ]
+  
   
 // start build
 RunTargetOrDefault "Build"

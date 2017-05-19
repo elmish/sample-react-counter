@@ -1,6 +1,15 @@
 source https://nuget.org/api/v2
 
-nuget FAKE
-nuget FSharp.Core
+nuget FSharp.Core  redirects:force, content:none
 nuget Fable.Core
+nuget Fable.React
+nuget Fable.Elmish
 nuget Fable.Elmish.React
+nuget Fable.Compiler
+
+group Build
+framework: net46
+
+    source https://nuget.org/api/v2
+    nuget FSharp.Core  redirects:force, content:none
+    nuget FAKE
