@@ -12,8 +12,8 @@ addons:
       - libunwind8-dev
 
 before_script:
-  - nvm install 4.4
-  - nvm use 4.4
+  - nvm install 4.7
+  - nvm use 4.7
   #install yarn globally
   - npm install -g yarn
 
