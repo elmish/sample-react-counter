@@ -18,10 +18,10 @@ build/
 obj
 bin
 out
+paket-files
 
 # git
 *.orig
-samples/react-native/navigation/windows/
 
 .vs
 

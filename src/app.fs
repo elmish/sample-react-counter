@@ -5,8 +5,6 @@ module App
  - tagline: The famous Increment/Decrement ported from Elm
 *)
 
-open Fable.Core
-open Fable.Import
 open Elmish
 
 // MODEL
@@ -26,7 +24,6 @@ let update (msg:Msg) (model:Model) =
     | Increment -> model + 1
     | Decrement -> model - 1
 
-open Fable.Core.JsInterop
 open Fable.Helpers.React.Props
 module R = Fable.Helpers.React
 
@@ -43,6 +40,6 @@ open Elmish.React
 
 // App
 Program.mkSimple init update view
-|> Program.withConsoleTrace
 |> Program.withReact "elmish-app"
+|> Program.withConsoleTrace
 |> Program.run
