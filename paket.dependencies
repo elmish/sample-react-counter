@@ -3,9 +3,9 @@ storage: none
 framework: netstandard2.0
 
 nuget FSharp.Core redirects:force, content:none
-nuget Fable.Core
-nuget Fable.Elmish 
-nuget Fable.Elmish.React
+nuget Fable.Core prerelease
+nuget Fable.Elmish prerelease
+nuget Fable.Elmish.React prerelease
 
 clitool dotnet-fable
 

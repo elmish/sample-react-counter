@@ -1,23 +1,11 @@
 const path = require("path");
 const webpack = require("webpack");
-const fableUtils = require("fable-utils");
 const HtmlWebpackPlugin = require('html-webpack-plugin');
 
 
 function resolve(filePath) {
     return path.join(__dirname, filePath)
 }
-
-var babelOptions = fableUtils.resolveBabelOptions({
-    presets: [
-        ["env", {
-            "targets": {
-                "browsers": ["last 2 versions"]
-            },
-            "modules": false
-        }]
-    ]
-});
 
 var isProduction = process.argv.indexOf("-p") >= 0;
 console.log("Bundling for " + (isProduction ? "production" : "development") + "...");
@@ -74,10 +62,7 @@ module.exports = {
             new webpack.NamedModulesPlugin()
         ]),
     resolve: {
-        modules: [
-            "node_modules/",
-            resolve("./node_modules/")
-        ]
+        symlinks: false
     },
     devServer: {
         contentBase: resolve('./build/'),
@@ -93,7 +78,6 @@ module.exports = {
                 use: {
                     loader: "fable-loader",
                     options: {
-                        babel: babelOptions,
                         define: isProduction ? [] : ["DEBUG"],
                         extra: { optimizeWatch: true }
                     }
@@ -104,7 +88,16 @@ module.exports = {
                 exclude: /node_modules/,
                 use: {
                     loader: 'babel-loader',
-                    options: babelOptions
+                    options: {
+                        presets: [
+                            ["env", {
+                                "targets": {
+                                    "browsers": ["last 2 versions"]
+                                },
+                                "modules": false,
+                                "useBuiltIns": true
+                            }]
+                        ]}
                 },
             },
             {

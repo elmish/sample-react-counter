@@ -57,14 +57,14 @@ Target "Build" (fun _ ->
     projects
     |> Seq.iter (fun s -> 
         let dir = IO.Path.GetDirectoryName s
-        runDotnet dir "fable npm-run build")
+        runDotnet dir "fable yarn-run build")
 )
 
 Target "Watch" (fun _ ->
     projects
     |> Seq.iter (fun s -> 
         let dir = IO.Path.GetDirectoryName s
-        runDotnet dir "fable npm-run start")
+        runDotnet dir "fable yarn-run start")
 )
 
 // --------------------------------------------------------------------------------------
