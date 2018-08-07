@@ -7,7 +7,7 @@ nuget Fable.Core prerelease
 nuget Fable.Elmish prerelease
 nuget Fable.Elmish.React prerelease
 
-clitool dotnet-fable
+clitool dotnet-fable prerelease
 
 group Build
 framework: net46
