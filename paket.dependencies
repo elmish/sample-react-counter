@@ -1,12 +1,10 @@
 source https://nuget.org/api/v2
-storage: none
 framework: netstandard2.0
 
 nuget FSharp.Core redirects:force, content:none
 nuget Fable.Core prerelease
 nuget Fable.Elmish prerelease
 nuget Fable.Elmish.React prerelease
-nuget Fable.Elmish.Debugger prerelease
 
 clitool dotnet-fable prerelease
 
