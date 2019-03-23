@@ -7,19 +7,20 @@
     "start": "webpack-dev-server"
   },
   "dependencies": {
-    "babel-polyfill": "^6.26.0",
+    "@babel/polyfill": "^7.0.0",
     "react": "^16.3.2",
     "react-dom": "^16.3.2",
     "remotedev": "^0.2.7",
     "whatwg-fetch": "^2.0.1"
   },
   "devDependencies": {
-    "autoprefixer": "^6.7.7",
-    "babel-core": "^6.24.0",
-    "babel-loader": "^7.0.0",
-    "babel-plugin-transform-runtime": "^6.23.0",
-    "babel-preset-env": "^1.6.1",
-    "fable-loader": "^2.0.0-alfa-003",
+    "@babel/core": "^7.0.0",
+    "@babel/plugin-external-helpers": "^7.0.0",
+    "@babel/plugin-transform-runtime": "^7.0.0",
+    "@babel/preset-env": "^7.0.0",
+    "babel-loader": "^8.0.0",
+    "fable-compiler": "^2.1.12",
+    "fable-loader": "^2.1.5",
     "fs-extra": "^1.0.0",
     "html-webpack-plugin": "^3.2.0",
     "webpack": "^4.12.0",

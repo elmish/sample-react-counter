@@ -36,17 +36,11 @@ Target.create "Install" (fun _ ->
 )
 
 Target.create "Build" (fun _ ->
-    projects
-    |> Seq.iter (fun s -> 
-        let dir = IO.Path.GetDirectoryName s
-        DotNet.exec (fun o -> { o with WorkingDirectory = dir }) "fable" "yarn-run build" |> ignore)
+    Yarn.exec "build" id
 )
 
 Target.create "Watch" (fun _ ->
-    projects
-    |> Seq.iter (fun s -> 
-        let dir = IO.Path.GetDirectoryName s
-        DotNet.exec (fun o -> { o with WorkingDirectory = dir }) "fable" "yarn-run start" |> ignore)
+    Yarn.exec "start" id
 )
 
 // --------------------------------------------------------------------------------------

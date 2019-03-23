@@ -3,6 +3,17 @@ const webpack = require("webpack");
 const HtmlWebpackPlugin = require('html-webpack-plugin');
 
 
+const babelOptions = {
+    presets: [
+      ["@babel/preset-env", {
+          "targets": {
+              "browsers": ["last 2 versions"]
+          },
+          "modules": false
+      }]
+    ]
+};
+
 function resolve(filePath) {
     return path.join(__dirname, filePath)
 }
@@ -22,12 +33,12 @@ module.exports = {
     entry: isProduction ? // We don't use the same entry for dev and production, to make HMR over style quicker for dev env
         {
             demo: [
-                "babel-polyfill",
+                "@babel/polyfill",
                 resolve('./src/app.fsproj')
             ]
         } : {
             app: [
-                "babel-polyfill",
+                "@babel/polyfill",
                 resolve('./src/app.fsproj')
             ],
             style: [
@@ -88,16 +99,7 @@ module.exports = {
                 exclude: /node_modules/,
                 use: {
                     loader: 'babel-loader',
-                    options: {
-                        presets: [
-                            ["env", {
-                                "targets": {
-                                    "browsers": ["last 2 versions"]
-                                },
-                                "modules": false,
-                                "useBuiltIns": true
-                            }]
-                        ]}
+                    options: babelOptions
                 },
             },
             {

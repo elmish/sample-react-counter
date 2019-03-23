@@ -24,22 +24,21 @@ let update (msg:Msg) (model:Model) =
     | Increment -> model + 1
     | Decrement -> model - 1
 
-open Fable.Helpers.React.Props
-module R = Fable.Helpers.React
+open Fable.React
+open Fable.React.Props
 
 // VIEW (rendered with React)
 
 let view model dispatch =
-
-  R.div []
-      [ R.button [ OnClick (fun _ -> dispatch Decrement) ] [ R.str "-" ]
-        R.div [] [ R.str (sprintf "%A" model) ]
-        R.button [ OnClick (fun _ -> dispatch Increment) ] [ R.str "+" ] ]
+  div []
+      [ button [ OnClick (fun _ -> dispatch Decrement) ] [ str "-" ]
+        div [] [ str (sprintf "%A" model) ]
+        button [ OnClick (fun _ -> dispatch Increment) ] [ str "+" ] ]
 
 open Elmish.React
 
 // App
 Program.mkSimple init update view
-|> Program.withReact "elmish-app"
+|> Program.withReactBatched "elmish-app"
 |> Program.withConsoleTrace
 |> Program.run
