@@ -1,123 +1,89 @@
 const path = require("path");
 const webpack = require("webpack");
+const CopyWebpackPlugin = require('copy-webpack-plugin');
 const HtmlWebpackPlugin = require('html-webpack-plugin');
+const MinifyPlugin = require("terser-webpack-plugin");
 
-
-const babelOptions = {
-    presets: [
-      ["@babel/preset-env", {
-          "targets": {
-              "browsers": ["last 2 versions"]
-          },
-          "modules": false
-      }]
-    ]
-};
-
-function resolve(filePath) {
-    return path.join(__dirname, filePath)
-}
-
-var isProduction = process.argv.indexOf("-p") >= 0;
+const isProduction = process.argv.indexOf("serve") < 0;
 console.log("Bundling for " + (isProduction ? "production" : "development") + "...");
 
-var commonPlugins = [
+const commonPlugins = [
     new HtmlWebpackPlugin({
-        filename: resolve('./build/index.html'),
-        template: resolve('./src/index.html')
-    })
-];
+        filename: './index.html',
+        template: './src/index.html'
+    }),
+    new CopyWebpackPlugin({
+        patterns: [
+            { from: './node_modules/todomvc-app-css/index.css' }
+        ]}
+    )];
 
 module.exports = {
-    devtool: undefined,
+    mode: "development",
+    devtool: isProduction ? false : "source-map",
     entry: isProduction ? // We don't use the same entry for dev and production, to make HMR over style quicker for dev env
-        {
-            demo: [
-                "@babel/polyfill",
-                resolve('./src/app.fsproj')
-            ]
-        } : {
-            app: [
-                "@babel/polyfill",
-                resolve('./src/app.fsproj')
-            ],
-            style: [
-            ]
-        },
-    mode: isProduction ? "production" : "development",
+    {
+        demo: [
+            './src/out/app.js'
+        ]
+    } : {
+        app: [
+            './src/out/app.js'
+        ]
+    },
     output: {
-        path: resolve('./build'),
-        filename: isProduction ? '[name].[hash].js' : '[name].js'
+        path: path.join(__dirname, "./build"),
+        filename: isProduction ? '[name].[hash].js' : '[name].js',
+        publicPath: "/"
     },
     optimization : {
         splitChunks: {
             cacheGroups: {
                 commons: {
-                    test: /[\\/]node_modules[\\/]/,
+                    test: /node_modules/,
                     name: "vendors",
-                    chunks: "all"
-                },
-                fable: {
-                    test: /[\\/]fable-core[\\/]/,
-                    name: "fable",
                     chunks: "all"
                 }
             }
         },
-    },
-    plugins: isProduction ?
-        commonPlugins.concat([
-        ])
-        : commonPlugins.concat([
-            new webpack.HotModuleReplacementPlugin(),
-            new webpack.NamedModulesPlugin()
-        ]),
-    resolve: {
-        symlinks: false
+        minimizer: isProduction
+            ? [new MinifyPlugin()]
+            : []
     },
     devServer: {
-        contentBase: resolve('./build/'),
-        publicPath: "/",
-        port: 8080,
-        hot: true,
-        inline: true
+        port: 8090,
+        static: {
+            directory: './build'
+        }
     },
     module: {
         rules: [
             {
-                test: /\.fs(x|proj)?$/,
-                use: {
-                    loader: "fable-loader",
-                    options: {
-                        define: isProduction ? [] : ["DEBUG"],
-                        extra: { optimizeWatch: true }
-                    }
-                }
+                test: /\.js$/,
+                enforce: "pre",
+                use: ["source-map-loader"],
             },
             {
                 test: /\.js$/,
                 exclude: /node_modules/,
                 use: {
                     loader: 'babel-loader',
-                    options: babelOptions
+                    options: {
+                        presets: [
+                            ["@babel/preset-env", {
+                                "modules": false,
+                                "useBuiltIns": "usage",
+                                "corejs": 3
+                            }]
+                        ],
+                    }
                 },
-            },
-            {
-                test: /\.s?[ac]ss$/,
-                use: [
-                    'style-loader',
-                    'css-loader',
-                    'sass-loader',
-                ],
-            },
-            {
-                test: /\.css$/,
-                use: ['style-loader', 'css-loader']
-            },
-            {
-                test: /\.(png|jpg|jpeg|gif|svg|woff|woff2|ttf|eot)(\?.*$|$)/,
-                use: ["file-loader"]
             }
         ]
-    }
-};
+    }, 
+    plugins: isProduction
+        ? commonPlugins
+        : commonPlugins.concat([
+            new webpack.HotModuleReplacementPlugin()
+        ])
+}
