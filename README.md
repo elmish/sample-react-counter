@@ -9,11 +9,11 @@ The sample is live and you can try it [here](https://fable-elmish.github.io/samp
 
 ## Building and running the sample
 Pre-requisites:
-* .NET Core [SDK 5.*](https://docs.microsoft.com/en-us/dotnet/core/install/sdk)
-* `yarn` installed as a global `npm` or a platform package and available in the path 
+* .NET [SDK 10.0](https://dotnet.microsoft.com/en-us/download/dotnet/10.0)
+* `npm` (comes with Node.js)
 
 To build locally and start the webpack-devserver:
-* once: `dotnet tool restore`
-* `dotnet fake build -t Watch`
+* once: `dotnet tool restore && npm install`
+* `dotnet fsi build.fsx -- -t Watch`
 
 open [localhost:8090](http://localhost:8090)
