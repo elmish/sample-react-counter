@@ -7,8 +7,8 @@
     "react-dom": "^19.0.0"
   },
   "devDependencies": {
-    "@babel/core": "^7.29.0",
-    "@babel/preset-env": "^7.29.0",
+    "@babel/core": "^8.0.1",
+    "@babel/preset-env": "^8.0.2",
     "babel-loader": "^10.0.0",
     "core-js": "^3.48.0",
     "file-loader": "^6.2.0",
